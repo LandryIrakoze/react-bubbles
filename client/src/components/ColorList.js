@@ -10,18 +10,24 @@ const ColorList = ({ colors, updateColors, getData }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
+  const [colorToAdd, setColorToAdd] = useState(initialColor);
 
   const editColor = color => {
     setEditing(true);
     setColorToEdit(color);
   };
 
+  const clearEdit = () => {
+    setEditing(false);
+    setColorToEdit(initialColor);
+  }
+
   const saveEdit = e => {
     e.preventDefault();
     axiosWithAuth()
       .put(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
       .then(res => {
-        console.log(res)
+        console.log(res);
         getData();
       })
       .catch(err => console.error(err))
@@ -32,10 +38,22 @@ const ColorList = ({ colors, updateColors, getData }) => {
       .delete(`http://localhost:5000/api/colors/${color.id}`)
       .then(res => {
         console.log(res)
-        getData();
+        // clearEdit();
+        getData()
       })
       .catch(err => console.error(err))
   };
+
+  const addColor = e => {
+    e.preventDefault();
+    axiosWithAuth()
+      .post(`http://localhost:5000/api/colors/`, colorToAdd)
+      .then(res => {
+        console.log(res)
+        getData()
+      })
+      .catch(err => console.error(err))
+  }
 
   return (
     <div className="colors-wrap">
@@ -61,24 +79,11 @@ const ColorList = ({ colors, updateColors, getData }) => {
           <legend>edit color</legend>
           <label>
             color name:
-            <input
-              onChange={e =>
-                setColorToEdit({ ...colorToEdit, color: e.target.value })
-              }
-              value={colorToEdit.color}
-            />
+            <input onChange={e => setColorToEdit({ ...colorToEdit, color: e.target.value })} value={colorToEdit.color} />
           </label>
           <label>
             hex code:
-            <input
-              onChange={e =>
-                setColorToEdit({
-                  ...colorToEdit,
-                  code: { hex: e.target.value }
-                })
-              }
-              value={colorToEdit.code.hex}
-            />
+            <input onChange={e => setColorToEdit({...colorToEdit, code: { hex: e.target.value }})} value={colorToEdit.code.hex} />
           </label>
           <div className="button-row">
             <button type="submit">save</button>
@@ -86,8 +91,22 @@ const ColorList = ({ colors, updateColors, getData }) => {
           </div>
         </form>
       )}
-      <div className="spacer" />
+      {/* <div className="spacer" /> */}
       {/* stretch - build another form here to add a color */}
+      <form onSubmit={addColor}>
+        <legend>add color</legend>
+        <label>
+          color name:
+          <input onChange={e => setColorToAdd({...colorToAdd, color: e.target.value})} value={colorToAdd.color} />
+        </label>
+        <label>
+          hex code:
+          <input onChange={e => setColorToAdd({...colorToAdd, code: {hex: e.target.value}})} value={colorToAdd.code.hex} />
+        </label>
+        <div className="button-row">
+          <button type="submit">add</button>
+        </div>
+      </form>
     </div>
   );
 };

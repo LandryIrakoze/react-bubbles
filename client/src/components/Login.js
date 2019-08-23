@@ -24,6 +24,7 @@ const Login = (props) => {
   return (
     <>
       <form onSubmit={event => handleSubmit(event)}>
+        <legend>login</legend>
         <label>
             Username:
             <input type="text" name="username" value={userInfo.username} onChange={event => handleChange(event)}/>
