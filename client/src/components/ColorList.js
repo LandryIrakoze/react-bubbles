@@ -12,6 +12,10 @@ const ColorList = ({ colors, updateColors, getData }) => {
   const [colorToEdit, setColorToEdit] = useState(initialColor);
   const [colorToAdd, setColorToAdd] = useState(initialColor);
 
+  const alignFix = {
+    textAlign: 'left'
+  }
+
   const editColor = color => {
     setEditing(true);
     setColorToEdit(color);
@@ -28,6 +32,7 @@ const ColorList = ({ colors, updateColors, getData }) => {
       .put(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
       .then(res => {
         console.log(res);
+        updateColors(colors)
         getData();
       })
       .catch(err => console.error(err))
@@ -38,7 +43,8 @@ const ColorList = ({ colors, updateColors, getData }) => {
       .delete(`http://localhost:5000/api/colors/${color.id}`)
       .then(res => {
         console.log(res)
-        // clearEdit();
+        clearEdit();
+        updateColors(colors)
         getData()
       })
       .catch(err => console.error(err))
@@ -50,6 +56,7 @@ const ColorList = ({ colors, updateColors, getData }) => {
       .post(`http://localhost:5000/api/colors/`, colorToAdd)
       .then(res => {
         console.log(res)
+        updateColors(colors)
         getData()
       })
       .catch(err => console.error(err))
@@ -59,7 +66,7 @@ const ColorList = ({ colors, updateColors, getData }) => {
     <div className="colors-wrap">
       <p>colors</p>
       <ul>
-        {colors.map(color => (
+        {/* {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
               <span className="delete" onClick={() => deleteColor(color)}>
@@ -67,10 +74,20 @@ const ColorList = ({ colors, updateColors, getData }) => {
               </span>{" "}
               {color.color}
             </span>
-            <div
-              className="color-box"
-              style={{ backgroundColor: color.code.hex }}
-            />
+            <div className="color-box" style={{ backgroundColor: color.code.hex }} />
+          </li>
+        ))} */}
+        {colors.map(color => (
+          <li key={color.color}>
+
+              <span className="delete" onClick={() => deleteColor(color)}>
+                x
+              </span>
+              <span onClick={() => editColor(color)} style={alignFix}>
+              {" "}
+              {color.color}
+              </span>
+            <div className="color-box" style={{ backgroundColor: color.code.hex }} />
           </li>
         ))}
       </ul>
